@@ -21,7 +21,7 @@ register_deactivation_hook( __FILE__, 'projectpentagon_remove' );
 
 function projectpentagon_install() {
 /* Creates new database field */
-add_option("projectpentagon_data", 'Default', '', 'yes');
+add_option("projectpentagon_title", 'fgfhgThis it the Title of my Pentagram', '', 'yes');
 add_option("projectpentagon_name1", 'Name a', '', 'yes');
 add_option("projectpentagon_name2", 'Name b', '', 'yes');
 add_option("projectpentagon_name3", 'Name c', '', 'yes');
@@ -32,13 +32,12 @@ add_option("projectpentagon_color2", 'Red', '', 'yes');
 add_option("projectpentagon_color3", 'Yellow', '', 'yes');
 add_option("projectpentagon_color4", 'Green', '', 'yes');
 add_option("projectpentagon_color5", 'Orange', '', 'yes');
-
 //these could probably be created as an array? eventually
 }
 
 function projectpentagon_remove() {
 /* Deletes the database field */
-delete_option('projectpentagon_data');
+delete_option('projectpentagon_title');
 delete_option('projectpentagon_name1');
 delete_option('projectpentagon_name2');
 delete_option('projectpentagon_name3');
@@ -57,54 +56,83 @@ if ( is_admin() ){
 add_action('admin_menu', 'projectpentagon_menu');
 
 function projectpentagon_menu() {
-add_options_page('Project Pentagon', 'Project Pentagon', 'administrator',
-'projectpentagon', 'projectpentagon_html_page');
+	//create new top-level menu
+	add_menu_page('Project Pentagon', 'Project Pentagon', 'administrator', __FILE__, 'projectpentagon_htmlpage',plugins_url('/images/icon.png', __FILE__));
+
+	//call register settings function
+	add_action( 'admin_init', 'projectpentagon_mysettings' );
 }
 }
 
+function projectpentagon_mysettings() {
+	//register our settings
+	register_setting( 'baw-settings-group', 'projectpentagon_name1' );
+	register_setting( 'baw-settings-group', 'projectpentagon_name2' );
+	register_setting( 'baw-settings-group', 'projectpentagon_name3' );
+	register_setting( 'baw-settings-group', 'projectpentagon_name4' );
+	register_setting( 'baw-settings-group', 'projectpentagon_name5' );
+	register_setting( 'baw-settings-group', 'projectpentagon_color1' );
+	register_setting( 'baw-settings-group', 'projectpentagon_color2' );
+	register_setting( 'baw-settings-group', 'projectpentagon_color3' );
+	register_setting( 'baw-settings-group', 'projectpentagon_color4' );
+	register_setting( 'baw-settings-group', 'projectpentagon_color5' );
+}
 
-function projectpentagon_html_page() {
+function projectpentagon_htmlpage() {
 ?>
-<link rel='stylesheet' href='pentagon.css' type='text/css' media='all' />
-<div>
-<h2>Rating Pentagram Options</h2>
-<p>The pentagon rating system has five categories. Assign categories + the
-	color that ratings in that segment of the pentagon should appear.</p>
-	
+<div class="wrap">
+<h2>Project Pentagon</h2>
+
 <form method="post" action="options.php">
-<?php wp_nonce_field('update-options'); ?>
+    <?php settings_fields( 'baw-settings-group' ); ?>
+    <table class="form-table">
+    	        <tr valign="top">
+        <th scope="row">Name 1</th>
+        <td><input type="text" name="projectpentagon_name1" value="<?php echo get_option('projectpentagon_name1'); ?>" /></td>
+        </tr>
+                <tr valign="top">
+        <th scope="row">Color 1</th>
+        <td><input type="text" name="projectpentagon_color1" value="<?php echo get_option('projectpentagon_color1'); ?>" /></td>
+        </tr>
+                <tr valign="top">
+        <th scope="row">Name 2</th>
+        <td><input type="text" name="projectpentagon_name2" value="<?php echo get_option('projectpentagon_name2'); ?>" /></td>
+        </tr>
+                <tr valign="top">
+        <th scope="row">Color 2</th>
+        <td><input type="text" name="projectpentagon_color2" value="<?php echo get_option('projectpentagon_color2'); ?>" /></td>
+        </tr>
+                <tr valign="top">
+        <th scope="row">Name 3</th>
+        <td><input type="text" name="projectpentagon_name3" value="<?php echo get_option('projectpentagon_name3'); ?>" /></td>
+        </tr>
+                <tr valign="top">
+        <th scope="row">Color 3</th>
+        <td><input type="text" name="projectpentagon_color3" value="<?php echo get_option('projectpentagon_color3'); ?>" /></td>
+        </tr>
+                <tr valign="top">
+        <th scope="row">Name 4</th>
+        <td><input type="text" name="projectpentagon_name4" value="<?php echo get_option('projectpentagon_name4'); ?>" /></td>
+        </tr>
+                <tr valign="top">
+        <th scope="row">Color 4</th>
+        <td><input type="text" name="projectpentagon_color4" value="<?php echo get_option('projectpentagon_color4'); ?>" /></td>
+        </tr>
+                <tr valign="top">
+        <th scope="row">Name 5</th>
+        <td><input type="text" name="projectpentagon_name5" value="<?php echo get_option('projectpentagon_name5'); ?>" /></td>
+        </tr>
+        <tr valign="top">
+        <th scope="row">Color 5</th>
+        <td><input type="text" name="projectpentagon_color5" value="<?php echo get_option('projectpentagon_color5'); ?>" /></td>
+        </tr>
+         
 
-<?php 
-for($i=1;$i<6;$i++)
-	{
-	?>	
-	<fieldset class="former">
-	<label>Enter NAME for segment #<?php echo $i; ?></label>
-	<input name="projectpentagon_name<?php echo $i; ?>" type="text" id="projectpentagon_name<?php echo $i; ?>"
-value="<?php echo get_option('projectpentagon_name'+ $i +''); ?>" />
-</fieldset>
-<fieldset class="latter">
-	<label>Enter COLOR for segment #<?php echo $i; ?></label>
-	<input name="projectpentagon_color<?php echo $i; ?>" type="text" id="projectpentagon_color<?php echo $i; ?>"
-value="<?php echo get_option('projectpentagon_color'+ $i +''); ?>" />
-</fieldset>
-	<?php
-	}
-	?>
-<fieldset>
-	<label>Enter Text</label>
-	<input name="projectpentagon_data" type="text" id="projectpentagon_data"
-value="<?php echo get_option('projectpentagon_data'); ?>" />
-</fieldset>
-
-
-
-<input type="hidden" name="action" value="update" />
-<input type="hidden" name="page_options" value="projectpentagon_data" />
-
-<p>
-<input type="submit" value="<?php _e('Save Changes') ?>" />
-</p>
+    </table>
+    
+    <p class="submit">
+    <input type="submit" class="button-primary" value="<?php _e('Save Changes') ?>" />
+    </p>
 
 </form>
 </div>
