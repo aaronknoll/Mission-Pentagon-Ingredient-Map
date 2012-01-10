@@ -53,7 +53,113 @@ delete_option('projectpentagon_color5');
 if ( is_admin() ){
 
 /* Call the html code */
-add_action('admin_menu', 'projectpentagon_menu');
+	/* puts the admin section for Project Pentagon on the pages */
+	add_action('admin_menu', 'projectpentagon_menu');
+	/* puts the options to add ratings on individual post pages */
+	add_action( 'add_meta_boxes', 'projectpentagon_custom_box' );
+	/* Do something with the data entered */
+	add_action( 'save_post', 'projectpentagon_save_postdata' );
+
+function projectpentagon_custom_box() {	
+	add_meta_box( 
+       'myplugin_sectionid',
+        __( 'Pentagon Ratings', 'myplugin_textdomain' ),
+        'projectpentagon_ratingsperbottle',
+        'post','side','high'
+    );
+
+}
+
+function projectpentagon_save_postdata($post_id) {
+  // verify if this is an auto save routine. 
+  // If it is our form has not been submitted, so we dont want to do anything
+  if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) 
+      return;
+
+  // verify this came from the our screen and with proper authorization,
+  // because save_post can be triggered at other times
+
+  if ( !wp_verify_nonce( $_POST['myplugin_noncename'], plugin_basename( __FILE__ ) ) )
+      return;
+
+  
+  // Check permissions
+  if ( 'page' == $_POST['post_type'] ) 
+  {
+    if ( !current_user_can( 'edit_page', $post_id ) )
+        return;
+  }
+  else
+  {
+    if ( !current_user_can( 'edit_post', $post_id ) )
+        return;
+  }
+
+  // OK, we're authenticated: we need to find and save the data
+
+  //$mydata1 = $_POST['myplugin_new_field'];//working, turned off to debug
+
+  // Do something with $mydata 
+  // probably using add_post_meta(), update_post_meta(), or 
+  // a custom table (see Further Reading section below)
+  for($hh=1;$hh<6;$hh++)
+  	{
+  	//do an update for each of the potential 5 fields....
+  	$get_field_name					=	"myplugin_new_field" . $hh ."";	
+  	$create_variable_name			=	"pentagon-field-". $hh ."";	
+	$create_name_of_field_to_update =	"mydata" . $hh ."";
+	$newvalue = $_POST[$get_field_name];
+	//echo "$newvalue is returning  ---". 	$newvalue	."<br />";//DEBUG
+	update_post_meta($post_id, $create_variable_name, $newvalue);	
+  	
+	//echo "get field name is returning --- ". $get_field_name	."<br />";//DEBUG
+	//echo "create variable name name is returning --- ".   	$create_variable_name		."<br />";//DEBUG
+	//echo "$create_name_of_field_to_update is returning --- ". 	$create_name_of_field_to_update	."<br />";//DEBUG
+
+	}
+
+  //echo "$mydata is mydata....";//debug
+}
+
+
+/* Adds a box to the main column on the Post and Page edit screens */
+function projectpentagon_ratingsperbottle() {
+
+  // Use nonce for verification
+  wp_nonce_field( plugin_basename( __FILE__ ), 'myplugin_noncename' );
+
+	 $post_idinhere	=	$_GET['post']; //GET THE ID OUTSIDE OF THE LOOP
+ 	// OKAY, WE NEED TO SETUP 5 OF THESE ENTRY FIELDS. (5 OF EVERYTHING)
+ 	 for($jj=1;$jj<6;$jj++)
+  	{
+  		  $get_field_name		=	"myplugin_new_field" . $jj ."";
+  		  $create_variable_name	=	"pentagon-field-". $jj ."";	
+		 	 // The actual fields for data entry
+		  echo '<label for="'. $get_field_name .'">';
+		   // see if there's a value already in the database:
+		  $meta_value_field1 = get_post_meta($post_idinhere, $create_variable_name, true); 
+		  if($meta_value_field1)
+		  	{
+		  	//echo "we're at debut point a";//debug
+		  	$display1 = $meta_value_field1; 
+			}
+		  else 
+		  	{
+		  	//echo "we're at debut point b". $meta_value_field1 ."";//debug
+		  	$display1 = "enter value here.";
+			}
+			
+		       _e("Description for this field", 'myplugin_textdomain' );
+		  echo '</label> ';
+		
+			
+		  echo '<input type="text" id="'. $get_field_name .'" name="'. $get_field_name .'" value="'. $display1 .'" size="25" />
+		  <br /><br />';
+				
+				
+		
+	}
+}
 
 function projectpentagon_menu() {
 	//create new top-level menu
