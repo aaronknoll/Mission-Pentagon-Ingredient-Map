@@ -32,6 +32,7 @@ add_option("projectpentagon_color2", 'Red', '', 'yes');
 add_option("projectpentagon_color3", 'Yellow', '', 'yes');
 add_option("projectpentagon_color4", 'Green', '', 'yes');
 add_option("projectpentagon_color5", 'Orange', '', 'yes');
+add_option("projectpentagon_category", 'Category Name', '', 'yes');
 //these could probably be created as an array? eventually
 }
 
@@ -48,6 +49,7 @@ delete_option('projectpentagon_color2');
 delete_option('projectpentagon_color3');
 delete_option('projectpentagon_color4');
 delete_option('projectpentagon_color5');
+delete_option('projectpentagon_category');
 }
 
 if ( is_admin() ){
@@ -132,6 +134,7 @@ function projectpentagon_ratingsperbottle() {
  	// OKAY, WE NEED TO SETUP 5 OF THESE ENTRY FIELDS. (5 OF EVERYTHING)
  	 for($jj=1;$jj<6;$jj++)
   	{
+  		  $get_option_name		=	"projectpentagon_name" . $jj ."";
   		  $get_field_name		=	"myplugin_new_field" . $jj ."";
   		  $create_variable_name	=	"pentagon-field-". $jj ."";	
 		 	 // The actual fields for data entry
@@ -148,16 +151,16 @@ function projectpentagon_ratingsperbottle() {
 		  	//echo "we're at debut point b". $meta_value_field1 ."";//debug
 		  	$display1 = "enter value here.";
 			}
-			
-		       _e("Description for this field", 'myplugin_textdomain' );
-		  echo '</label> ';
+			// we're not using _e because its user input text we're retrieving.
+			// we'll assume that the user put it in the database in their preferred language
+		 	echo get_option($get_option_name);
+		      
+		  echo '</label>
+		  <br /> ';
 		
 			
 		  echo '<input type="text" id="'. $get_field_name .'" name="'. $get_field_name .'" value="'. $display1 .'" size="25" />
-		  <br /><br />';
-				
-				
-		
+		  <br /><br />';	
 	}
 }
 
@@ -182,6 +185,8 @@ function projectpentagon_mysettings() {
 	register_setting( 'baw-settings-group', 'projectpentagon_color3' );
 	register_setting( 'baw-settings-group', 'projectpentagon_color4' );
 	register_setting( 'baw-settings-group', 'projectpentagon_color5' );
+	register_setting( 'baw-settings-group', 'projectpentagon_category' );
+
 }
 
 function projectpentagon_htmlpage() {
@@ -192,6 +197,10 @@ function projectpentagon_htmlpage() {
 <form method="post" action="options.php">
     <?php settings_fields( 'baw-settings-group' ); ?>
     <table class="form-table">
+    	<tr valign="top">
+        <th scope="row">Name or slug of category for Pentagon display</th>
+        <td><input type="text" name="projectpentagon_category" value="<?php echo get_option('projectpentagon_category'); ?>" /></td>
+        </tr>
     	        <tr valign="top">
         <th scope="row">Name 1</th>
         <td><input type="text" name="projectpentagon_name1" value="<?php echo get_option('projectpentagon_name1'); ?>" /></td>
@@ -244,4 +253,50 @@ function projectpentagon_htmlpage() {
 </div>
 <?php
 }
+
+
+/*DISPLAY FILTERS AND HOOKS */
+//add_filter( 'the_content', 'pentagonseverywhere', 20 );
+
+		function pentagonseverywhere( $content )
+		 	{
+		 	//what category does this belong in?
+			$nameofcat	=	get_option("projectpentagon_category");
+			$idinloop	=	get_the_ID();
+		 	if ( in_category( $nameofcat )) 
+				{
+				$pentarray	=	array(); //instantiate the array we'll use in the display to fill in the variables.
+				
+				//so now we need to get all of the information for this page
+				//we need the names 
+				//we need the colors
+				 for($oo=1;$oo<6;$oo++)
+				  	{
+				  	 $name	=	"projectpentagon_name" . $oo ."";
+				  	 $color	=	"projectpentagon_color" . $oo ."";
+				 	 $pentarray[name][$oo]	= get_option($name);
+					 $pentarray[color][$oo]= get_option($color);
+					 
+					 
+					//field whose post meta we want
+					$postmetafield	=	"pentagon-field-". $oo ."";	
+					$pentarray[rating][$oo] = get_post_meta($idinloop, $postmetafield, true); 
+					
+					//DEBUG
+					echo get_option($name);
+					echo get_option($color);
+					echo get_post_meta($idinloop, $postmetafield, true); 
+					}
+				// and we need the ratings for this specific post. 
+				// Returns the content.
+				include display_the_pentagon.php; 
+				
+				return $content;
+				}
+				else
+				{
+				return $content;
+				}
+			}
+	
 ?>
