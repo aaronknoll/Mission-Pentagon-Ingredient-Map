@@ -29,34 +29,17 @@ License: GPL
 
 
 <svg id="svgelem" height="700" xmlns="http://www.w3.org/2000/svg">
-
-
-
- <polygon Stroke="#000" points="39.38,42.4 17.24,71.42 61.98,71.42" fill="#FFAB07"/>
- <polygon Stroke="#000" points="39.38,42.4 25.04,61.6 54.18,61.6" fill="#FFAB07" />
- <polygon Stroke="#000"  points="39.38,42.4 32.46,51.72, 47.76,51.72" fill="#FFAB07" />
-
-<g transform="rotate(72,39.38,42.4)" >
- <polygon Stroke="#000" points="39.38,42.4 17.24,71.42 61.98,71.42" fill="#E9D558"  />
- <polygon Stroke="#000" points="39.38,42.4 25.04,61.6 54.18,61.6" fill="#E9D558" />
- <polygon Stroke="#000"  points="39.38,42.4 32.46,51.72, 47.76,51.72" fill="E9D558" />
-</g>
-
-<g transform="rotate(144,39.38,42.4)" >
- <polygon Stroke="#000" points="39.38,42.4 17.24,71.42 61.98,71.42" fill="#72AD75" />
- <polygon Stroke="#000" points="39.38,42.4 25.04,61.6 54.18,61.6" fill="#72AD75" />
- <polygon Stroke="#000"  points="39.38,42.4 32.46,51.72, 47.76,51.72" fill="#72AD75" />
-</g>
-
-<g transform="rotate(288,39.38,42.4)" >
- <polygon Stroke="#000" points="39.38,42.4 17.24,71.42 61.98,71.42" fill="#0E8D94" />
- <polygon Stroke="#000" points="39.38,42.4 25.04,61.6 54.18,61.6" fill="#0E8D94" />
- <polygon Stroke="#000"  points="39.38,42.4 32.46,51.72, 47.76,51.72" fill="#0E8D94" />
-</g>
-
-<g transform="rotate(216,39.38,42.4)" >
- <polygon Stroke="#000" points="39.38,42.4 17.24,71.42 61.98,71.42" fill="#434D53" />
- <polygon Stroke="#000" points="39.38,42.4 25.04,61.6 54.18,61.6" fill="#434D53" />
- <polygon Stroke="#000"  points="39.38,42.4 32.46,51.72, 47.76,51.72" fill="#434D53" />
-</g>
+<?php 
+for ($i=1; $i < 6; $i++) 
+{
+	$rotation = (($i-1) * 72); 
+	?>
+	<g transform="rotate(<?php echo $rotation; ?>,39.38,42.4)" >
+ 		<polygon Stroke="#000" points="39.38,42.4 17.24,71.42 61.98,71.42" fill="#<?php echo $pentarray[color][$i]; ?>" />
+ 		<polygon Stroke="#000" points="39.38,42.4 25.04,61.6 54.18,61.6" fill="#<?php echo $pentarray[color][$i]; ?>" />
+ 		<polygon Stroke="#000"  points="39.38,42.4 32.46,51.72, 47.76,51.72" fill="#<?php echo $pentarray[color][$i]; ?>" />
+	</g>
+	<?php
+}
+?>
 </svg>

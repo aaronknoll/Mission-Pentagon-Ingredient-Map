@@ -289,8 +289,7 @@ add_filter( 'the_content', 'pentagonseverywhere', 20 );
 					}
 				// and we need the ratings for this specific post. 
 				// Returns the content.
-				include display_the_pentagon.php; 
-				
+				include plugins_url('display_the_pentagon.php'); 
 				return $content;
 				}
 				else
