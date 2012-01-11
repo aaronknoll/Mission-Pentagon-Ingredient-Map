@@ -256,7 +256,7 @@ function projectpentagon_htmlpage() {
 
 
 /*DISPLAY FILTERS AND HOOKS */
-//add_filter( 'the_content', 'pentagonseverywhere', 20 );
+add_filter( 'the_content', 'pentagonseverywhere', 20 );
 
 		function pentagonseverywhere( $content )
 		 	{
