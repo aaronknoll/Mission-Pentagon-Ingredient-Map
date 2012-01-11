@@ -289,7 +289,34 @@ add_filter( 'the_content', 'pentagonseverywhere', 20 );
 					}
 				// and we need the ratings for this specific post. 
 				// Returns the content.
-				include plugins_url('display_the_pentagon.php'); 
+				//this file contains the SVG output. Because it is all style based logic,
+				//it makes more sense to include it in this seperate file. 
+				//The words are NOT rotated:
+				?>
+				
+				<svg id="svgelem" height="150" xmlns="http://www.w3.org/2000/svg">
+						
+				<text x = "125" y = "85" fill = "navy" font-size = "10"><?php echo $pentarray[name][1]; ?></text>
+				<text x = "85" y = "65" fill = "navy" font-size = "10"><?php echo $pentarray[name][2]; ?></text>
+				<text x = "165" y = "65" fill = "navy" font-size = "10"><?php echo $pentarray[name][3]; ?></text>
+				<text x = "160" y = "20" fill = "navy" font-size = "10"><?php echo $pentarray[name][4]; ?></text>
+				<text x = "90" y = "20" fill = "navy" font-size = "10"><?php echo $pentarray[name][5]; ?></text> 
+		
+				<?php 
+				for ($i=1; $i < 6; $i++) 
+					{
+					$rotation = (($i-1) * 72); 
+				?>
+					<g transform="rotate(<?php echo $rotation; ?>,39.38,42.4)" >
+ 						<polygon Stroke="#000" points="39.38,42.4 17.24,71.42 61.98,71.42" fill="#<?php echo $pentarray[color][$i]; ?>" />
+ 						<polygon Stroke="#000" points="39.38,42.4 25.04,61.6 54.18,61.6" fill="#<?php echo $pentarray[color][$i]; ?>" />
+ 						<polygon Stroke="#000"  points="39.38,42.4 32.46,51.72, 47.76,51.72" fill="#<?php echo $pentarray[color][$i]; ?>" />
+					</g>
+				<?php
+				}
+				?>
+				</svg> 
+				<?php 
 				return $content;
 				}
 				else
