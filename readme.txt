@@ -1,2 +1,2 @@
-=== Pentagon Rating Tool ===
+=== Pentagon Rating Tool ===
 Contributors: Aaron Knoll
